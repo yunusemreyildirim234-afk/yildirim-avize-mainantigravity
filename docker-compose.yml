@@ -1,0 +1,18 @@
+services:
+  # Mevcut app servisin burada duracak...
+  
+  db:
+    image: postgres:15-alpine
+    container_name: yildirim_db
+    restart: always
+    environment:
+      POSTGRES_USER: emre
+      POSTGRES_PASSWORD: yildirim123
+      POSTGRES_DB: avize_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Enum'lar — uygulama kodu ve Kargonomi webhook'u ile birebir uyumludur
+// ─────────────────────────────────────────────────────────────
+
+enum OrderStatus {
+  PENDING          // Hazırlanıyor / kargo bekliyor
+  READY_FOR_PICKUP // Beyoğlu mağazada teslime hazır
+  SHIPPED          // Kargoya verildi (Kargonomi webhook ile)
+  DELIVERED        // Teslim edildi (Kargonomi webhook ile)
+  CANCELLED        // İptal edildi
+}
+
+enum ShippingType {
+  BEYOGLU_MAGAZA_TESLIM // Mağazadan teslim
+  STANDART_KARGO        // Kargonomi ahşap sandık kargo
+}
+
+// ─────────────────────────────────────────────────────────────
+// Kullanıcılar
+// ─────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("USER") // "USER" | "ADMIN"
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────
+// Katalog
+// ─────────────────────────────────────────────────────────────
+
+model Product {
+  id          String             @id @default(uuid())
+  title       String
+  description String?
+  category    String // Modern | Klasik | Kristal | Sarkıt | Yedek Parça
+  basePrice   Float
+  imageUrl    String?
+  variations  ProductVariation[]
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([category])
+}
+
+model ProductVariation {
+  id             String      @id @default(uuid())
+  productId      String
+  product        Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variationType  String // Örn: "Gövde Rengi", "Duy Sayısı"
+  variationValue String // Örn: "Gold", "5'li"
+  extraPrice     Float       @default(0)
+  stock          Int         @default(0)
+  orderItems     OrderItem[]
+
+  @@index([productId])
+}
+
+// ─────────────────────────────────────────────────────────────
+// Siparişler (Kargonomi API v1 entegreli)
+// ─────────────────────────────────────────────────────────────
+
+model Order {
+  id           String       @id @default(uuid())
+  userId       String
+  user         User         @relation(fields: [userId], references: [id])
+  totalAmount  Float
+  shippingType ShippingType
+  status       OrderStatus  @default(PENDING)
+  phone        String?
+  address      String?
+
+  // Alıcı konumu (Kargonomi il / ilçe kimlikleri)
+  buyerStateId   Int?
+  buyerCityId    Int?
+  buyerStateName String?
+  buyerCityName  String?
+  packageDesi    Float? @default(3)
+
+  // Kargonomi gönderi bilgileri
+  kargonomiShipmentId  Int?
+  kargonomiStatus      String? // draft, ready, webservice_shipment_started, ...
+  kargonomiStatusLabel String?
+  shippingProviderId   Int? // -1: Otomatik
+  shippingProviderName String?
+  shippingTrackingCode String?
+  shippingBarcode      String?
+  shippingPrice        String?
+
+  items     OrderItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([kargonomiShipmentId])
+  @@index([shippingTrackingCode])
+  @@index([shippingBarcode])
+}
+
+model OrderItem {
+  id          String           @id @default(uuid())
+  orderId     String
+  order       Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variationId String
+  variation   ProductVariation @relation(fields: [variationId], references: [id])
+  quantity    Int
+  unitPrice   Float // Sipariş anındaki birim fiyat (sunucuda hesaplanır)
+
+  @@index([orderId])
+}
+
+// Gelen webhook olaylarının kaydı: tekrar gönderimlerde (retry) mükerrer işlemi engeller
+model KargonomiWebhookEvent {
+  id          String    @id @default(uuid())
+  eventKey    String    @unique // olay kimliği veya gövde SHA-256 özeti
+  eventType   String
+  shipmentId  Int?
+  payload     Json
+  processedAt DateTime?
+  error       String?
+  createdAt   DateTime  @default(now())
+
+  @@index([shipmentId])
+}
