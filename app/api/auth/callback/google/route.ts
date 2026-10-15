@@ -13,7 +13,9 @@ export async function GET(req: Request) {
   try {
     const clientId = process.env.GOOGLE_CLIENT_ID || "158736155429-lc7aret2ncv05eie4tnj0kmdacr6rie4.apps.googleusercontent.com";
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET || "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";
-    const redirectUri = "http://127.0.0.1:4000/api/auth/callback/google";
+    // 16. satırı bu şekilde güncelleyin:
+const redirectUri = "http://localhost:3000/api/auth/callback/google";
+
 
     // 1. Google'dan Erişim Belgesi (Access Token) Alıyoruz
     const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
@@ -65,7 +67,7 @@ export async function GET(req: Request) {
     // 4. Giriş Başarılı -> Müşteriyi Profiline Gönder
     const targetUrl = new URL("/giris", req.url);
     targetUrl.searchParams.set("google_auth", "success");
-    targetUrl.searchParams.set("email", user.email);
+    targetUrl.searchParams.set("email", user.email || "");
 
     return NextResponse.redirect(targetUrl);
   } catch (err) {

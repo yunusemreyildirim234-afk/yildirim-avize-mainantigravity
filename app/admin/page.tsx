@@ -190,7 +190,7 @@ export default async function AdminPage() {
                           </span>
                         ) : (
                           <span className="inline-block bg-blue-100 text-blue-900 text-[11px] font-semibold px-2.5 py-1 rounded-full">
-                            📦 Özel Sandık Kargo
+                            📦 Üst Düzey Korumalı Kargo
                           </span>
                         )}
                         <div className="font-bold text-neutral-900 text-sm pt-1">

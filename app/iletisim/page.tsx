@@ -48,7 +48,7 @@ export default function IletisimPage() {
     },
     {
       q: "Kargoda kırılma riski var mı?",
-      a: "Tüm kristal ve metal avizelerimiz, darbelere karşı özel ahşap sandıklar ve strafor korumalarla sigortalı olarak sevk edilir. Olası bir hasarda koşulsuz ücretsiz parça/ürün değişimi garantimiz mevcuttur.",
+      a: "Tüm kristal ve metal avizelerimiz, darbelere karşı üst düzey korumalı ambalajlar ve strafor desteklerle Kargonomi güvencesiyle sigortalı olarak sevk edilir. Olası bir hasarda koşulsuz ücretsiz parça/ürün değişimi garantimiz mevcuttur.",
     },
     {
       q: "Mekanımıza özel ölçülerde avize üretiyor musunuz?",

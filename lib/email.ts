@@ -17,7 +17,7 @@ export async function sendOrderNotificationEmails(data: EmailOrderData) {
   const isBeyoglu = data.shippingType === "BEYOGLU_MAGAZA_TESLIM";
   const shippingText = isBeyoglu
     ? "📍 Beyoğlu Şişhane Mağazamızdan Teslim Alınacak"
-    : "📦 Sigortalı Ahşap Sandık Kargo ile Kapınıza Teslim Edilecek";
+    : "📦 Kargonomi Güvencesiyle Üst Düzey Korumalı Kargo ile Kapınıza Teslim Edilecek";
 
   const kargonomiBlock =
     !isBeyoglu && (data.kargonomiShipmentId || data.shippingTrackingCode || data.shippingBarcode)

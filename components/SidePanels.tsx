@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import { useTheme } from "@/context/ThemeContext";
+import { useSession, signOut } from "next-auth/react";
 import SearchBar from "@/components/SearchBar";
 
 const NAV_ITEMS: { href: string; label: string; accent?: boolean }[] = [
@@ -18,6 +19,7 @@ const NAV_ITEMS: { href: string; label: string; accent?: boolean }[] = [
   { href: "/kategori/sarkit", label: "Sarkıt & Aplik" },
   { href: "/kategori/yedek-parca", label: "Yedek Parça & Cam" },
   { href: "/kargo-takip", label: "Kargo Takip", accent: true },
+  { href: "/banka-hesaplarimiz", label: "Banka Hesaplarımız" },
   { href: "/hakkimizda", label: "Hakkımızda" },
   { href: "/iletisim", label: "İletişim" },
 ];
@@ -45,6 +47,7 @@ function ThemeToggle() {
 
 export default function SidePanels() {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const { totalItems, totalPrice } = useCart();
   const { totalFavorites } = useWishlist();
   const [leftOpen, setLeftOpen] = useState(false);
@@ -189,9 +192,37 @@ export default function SidePanels() {
         </Link>
 
         <div className="flex flex-col gap-1 text-sm">
-          <Link href="/giris" className="nav-link rounded-xl px-3 py-2 font-medium opacity-80 hover:bg-black/5 hover:opacity-100 dark:hover:bg-white/5">
-            Hesabım & Siparişlerim
-          </Link>
+          {session?.user ? (
+            <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-2.5 mb-1 text-xs">
+              <span className="block text-[10px] uppercase tracking-wider text-amber-600 dark:text-amber-300 font-bold">
+                ● Giriş Yapıldı
+              </span>
+              <span className="font-semibold block truncate mt-0.5">{session.user.name || session.user.email}</span>
+              <div className="flex gap-2 mt-2 pt-2 border-t border-[var(--glass-border)]">
+                <Link
+                  href="/giris"
+                  className="text-[11px] font-bold text-amber-600 dark:text-amber-300 hover:underline"
+                >
+                  Profilim
+                </Link>
+                <span className="opacity-30">•</span>
+                <button
+                  onClick={() => signOut({ callbackUrl: "/giris" })}
+                  className="text-[11px] text-red-500 hover:underline font-semibold"
+                >
+                  Çıkış
+                </button>
+              </div>
+            </div>
+          ) : (
+            <Link
+              href="/giris"
+              className="nav-link rounded-xl px-3 py-2 font-medium opacity-80 hover:bg-black/5 hover:opacity-100 dark:hover:bg-white/5"
+            >
+              Giriş Yap / Kayıt Ol
+            </Link>
+          )}
+
           <Link
             href="/favorilerim"
             className="nav-link flex items-center justify-between rounded-xl px-3 py-2 font-medium opacity-80 hover:bg-black/5 hover:opacity-100 dark:hover:bg-white/5"

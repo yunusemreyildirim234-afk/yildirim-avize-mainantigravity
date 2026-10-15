@@ -21,22 +21,83 @@ enum OrderStatus {
 
 enum ShippingType {
   BEYOGLU_MAGAZA_TESLIM // Mağazadan teslim
-  STANDART_KARGO        // Kargonomi ahşap sandık kargo
+  STANDART_KARGO        // Kargonomi güvencesiyle üst düzey korumalı kargo
 }
 
 // ─────────────────────────────────────────────────────────────
-// Kullanıcılar
+// Kullanıcılar & NextAuth / Profil / Kargonomi Bilgileri
 // ─────────────────────────────────────────────────────────────
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      String   @default("USER") // "USER" | "ADMIN"
-  orders    Order[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @id @default(uuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // bcryptjs hash, misafir için "guest_checkout" veya OAuth için null
+  role          String    @default("USER") // "USER" | "ADMIN"
+
+  // Profil & Canlı Kargonomi Gönderici / Müşteri Bilgileri
+  phone         String?   // +90 5458126990
+  customerCode  String?   // Kargonomi Müşteri Kodu (JFHFVZ01)
+  taxNumber     String?   // TC Kimlik No / Vergi No (10022539990)
+  taxOffice     String?   // Vergi Dairesi (Beyoğlu)
+  accountType   String?   // Hesap Tipi (Bireysel / Firma Değilim)
+  dealerCode    String?   // Bayi Kodu (86)
+  monthlyVolume String?   // Aylık Gönderi (500+)
+  address       String?   // Sabit Adres (Bereketzade Mah...)
+  stateId       Int?      // İl ID (34 - İstanbul)
+  cityId        Int?      // İlçe ID (425 - Beyoğlu)
+  stateName     String?   // İl Adı (İstanbul)
+  cityName      String?   // İlçe Adı (Beyoğlu)
+
+  accounts      Account[]
+  sessions      Session[]
+  orders        Order[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([email])
+}
+
+// NextAuth OAuth Hesap Bağlantıları (Google, vb.)
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+// NextAuth Oturum Tablosu
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
 
 // ─────────────────────────────────────────────────────────────

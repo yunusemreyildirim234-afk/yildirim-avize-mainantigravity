@@ -235,7 +235,7 @@ export default function CartPage() {
               <p className="font-semibold text-neutral-800">
                 {shippingType === "BEYOGLU_MAGAZA_TESLIM"
                   ? "📍 Beyoğlu Şişhane Mağazamızdan Teslim Alınacak"
-                  : "📦 Kargonomi Sigortalı Ahşap Sandık Kargo ile Adresinize Gönderilecek"}
+                  : "📦 Kargonomi Güvencesiyle Üst Düzey Korumalı Kargo ile Adresinize Gönderilecek"}
               </p>
             </div>
           </div>
@@ -425,11 +425,11 @@ export default function CartPage() {
                   }`}
                 >
                   <div className="flex items-center justify-between text-xs font-semibold text-neutral-900">
-                    <span>📦 Kargonomi Ahşap Sandık Kargo</span>
+                    <span>📦 Kargonomi Güvencesiyle Kargo</span>
                     <span className="text-neutral-700 font-bold">250 ₺</span>
                   </div>
                   <p className="text-[11px] text-neutral-500 mt-1">
-                    Kargonomi güvencesiyle kırılmalara karşı ahşap korumalı sandıkta teslimat.
+                    Kargonomi güvencesiyle kırılmalara karşı üst düzey korumalı özel ambalajda teslimat.
                   </p>
                 </div>
               </div>

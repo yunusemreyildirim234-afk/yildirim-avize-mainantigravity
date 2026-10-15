@@ -7,6 +7,7 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { AuthProvider } from "@/context/AuthProvider";
 import { themeInitScript } from "@/lib/theme-script";
 
 const inter = Inter({ subsets: ["latin", "latin-ext"], variable: "--font-inter", display: "swap" });
@@ -14,7 +15,7 @@ const playfair = Playfair_Display({ subsets: ["latin", "latin-ext"], variable: "
 
 export const metadata: Metadata = {
   title: "Yıldırım Avize | Kristal ve Modern Aydınlatma",
-  description: "Beyoğlu, İstanbul'da yarım asırlık tecrübeyle kristal ve modern avize imalatı. Türkiye geneli sigortalı ahşap sandık kargo.",
+  description: "Beyoğlu, İstanbul'da yarım asırlık tecrübeyle kristal ve modern avize imalatı. Türkiye geneli Kargonomi güvencesiyle üst düzey korumalı kargo.",
 };
 
 export const viewport: Viewport = {
@@ -32,9 +33,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="relative min-h-dvh overflow-x-hidden antialiased">
-        <ThemeProvider>
-          <CartProvider>
-            <WishlistProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <CartProvider>
+              <WishlistProvider>
               {/* ── ARKA PLAN: "Yıldırım Avize" filigranı ─────────────── */}
               <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgb(231_200_115_/_0.18),_transparent_60%)]" />
@@ -86,7 +88,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </WishlistProvider>
           </CartProvider>
         </ThemeProvider>
-      </body>
-    </html>
-  );
+      </AuthProvider>
+    </body>
+  </html>
+);
 }

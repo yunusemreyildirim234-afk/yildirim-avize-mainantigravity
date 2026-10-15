@@ -31,7 +31,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
       date: "Geçen hafta",
       verified: true,
       city: "Ankara / Çankaya",
-      comment: "Kargo konusunda çok endişeliydim fakat ahşap sandık içerisinde tek bir kristali dahi çizilmeden geldi. Montaj kılavuzu çok açıklayıcıydı, teşekkürler.",
+      comment: "Kargo konusunda çok endişeliydim fakat üst düzey korumalı paketleme sayesinde tek bir kristali dahi çizilmeden geldi. Montaj kılavuzu çok açıklayıcıydı, teşekkürler.",
     },
     {
       id: "3",

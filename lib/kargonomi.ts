@@ -16,14 +16,13 @@ import crypto from "node:crypto";
 // Yapılandırma
 // ─────────────────────────────────────────────────────────────
 
-const DEFAULT_BASE_URL = "https://app.kargonomi.com.tr/api/v1";
+const DEFAULT_BASE_URL = "https://kargonomi.com.tr";
 const REQUEST_TIMEOUT_MS = 20_000;
 const MAX_GET_RETRIES = 2;
 
 /**
- * KARGONOMI_BASE_URL için hatalara karşı dayanıklı normalleştirme.
- * Sık yapılan hatalar: `https://kargonomi.com.tr` (API değil, pazarlama sitesi),
- * sonda `/` veya `/api/v1` eksikliği.
+ * KARGONOMI_BASE_URL için normalleştirme.
+ * Kullanıcı isteğine uygun olarak varsayılan https://kargonomi.com.tr olup /api/v1 eklenir.
  */
 export function getKargonomiBaseUrl(): string {
   const raw = (process.env.KARGONOMI_BASE_URL || DEFAULT_BASE_URL).trim();
@@ -31,10 +30,7 @@ export function getKargonomiBaseUrl(): string {
   try {
     url = new URL(raw);
   } catch {
-    return DEFAULT_BASE_URL;
-  }
-  if (url.hostname === "kargonomi.com.tr" || url.hostname === "www.kargonomi.com.tr") {
-    url.hostname = "app.kargonomi.com.tr";
+    return "https://kargonomi.com.tr/api/v1";
   }
   let path = url.pathname.replace(/\/+$/, "");
   if (!/\/api\/v\d+$/.test(path)) {

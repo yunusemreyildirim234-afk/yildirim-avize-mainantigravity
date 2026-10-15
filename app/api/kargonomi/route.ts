@@ -142,15 +142,15 @@ export async function POST(req: Request) {
           .join(", ")
           .slice(0, 200);
         const shipment = await createKargonomiShipment({
-          buyer_name: order.user.name,
-          buyer_email: order.user.email,
+          buyer_name: order.user.name || "Değerli Müşteri",
+          buyer_email: order.user.email ?? undefined,
           buyer_phone: order.phone as string,
           buyer_address: order.address,
           buyer_state_id: order.buyerStateId,
           buyer_city_id: order.buyerCityId,
           packages: [
             {
-              content: content || "Yıldırım Avize – Ahşap Sandık Kargo",
+              content: content || "Yıldırım Avize – Üst Düzey Korumalı Kargo",
               barcode: `YA-${order.id.slice(0, 8).toUpperCase()}`,
               desi: order.packageDesi ?? 3,
             },

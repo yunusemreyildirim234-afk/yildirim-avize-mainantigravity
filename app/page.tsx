@@ -15,7 +15,7 @@ const CATEGORIES = [
 
 const TRUST = [
   { title: "Yarım Asırlık Tecrübe", text: "Beyoğlu atölyesinde el işçiliği" },
-  { title: "Sigortalı Sandık Kargo", text: "Kargonomi ile ahşap koruma" },
+  { title: "Üst Düzey Korumalı Kargo", text: "Kargonomi güvencesiyle kargo" },
   { title: "Havale %5 İndirim", text: "Kuveyt Türk havale aktif" },
 ];
 
@@ -46,7 +46,7 @@ export default async function HomePage() {
           </h1>
           <p className="mt-5 max-w-md text-sm leading-relaxed opacity-70">
             Kristal ve modern avize imalatında yarım asırlık tecrübe. Her renk ve formda kristal avize taşı, avize camı ve özel tasarım avizeler —
-            kapınıza kadar sigortalı ahşap sandıkla.
+            kapınıza kadar Kargonomi güvencesiyle üst düzey korumalı özel ambalajla.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/urunler" className="rounded-2xl bg-amber-500 px-6 py-3 text-xs font-black uppercase tracking-widest text-black shadow-lg shadow-amber-500/20 transition hover:bg-amber-400 active:scale-95">
